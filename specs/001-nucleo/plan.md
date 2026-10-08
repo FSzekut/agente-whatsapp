@@ -1,7 +1,7 @@
 # Plano da spec 001
 
-> **Rascunho v0, 08/10/2026.** O "como" da [spec](spec.md). Muda quando a spec mudar.
-> ⟪Dn⟫ marca decisão sua (seção 2). *(minha)* marca escolha minha, com a saída ao lado. **F** = Fernando, **C** =
+> **v1, 08/10/2026: decisões D1 a D3 aceitas.** O "como" da [spec](spec.md). Muda quando a spec mudar.
+> *(minha)* marca escolha minha, com a saída ao lado. **F** = Fernando, **C** =
 > Claude, conforme a divisão da seção 9 da spec. Fatos de provedor conferidos nas páginas oficiais em 08/10/2026.
 
 ## 1. Stack
@@ -14,7 +14,7 @@
   Schema enviado ao modelo e valida o argumento que volta: um registro só (RF-11)
 - **`rapidfuzz` + `unicodedata`** para a busca tolerante a acento e erro de digitação (RF-14) *(minha)*
 - **`fastembed`** com `paraphrase-multilingual-MiniLM-L12-v2`, na CPU, importado só na hora de usar, como no
-  `rag_do_zero` ⟪D3⟫
+  `rag_do_zero` (D3)
 - **`sqlite3`** da biblioteca padrão para histórico, estado "com humano" e fila de encaminhamento, em
   `outputs/estado.sqlite3` *(minha; saída: um JSON por cliente, se o SQLite atrapalhar)*
 - **`pyyaml`** para tudo que se escreve à mão: negócio, modelos, casos *(minha)*
@@ -23,13 +23,13 @@
 - **Rede:** o `/etc/gai.conf` já prefere IPv4 (conferido em 08/10), então, ao contrário da legaltech, não é preciso
   forçar IPv4 no código
 
-## 2. Decisões a confirmar
+## 2. Decisões (aceitas em 08/10/2026)
 
 | | Decisão | Proposta | Por quê |
 |---|---|---|---|
-| **D1** | Modelos | **Groq `qwen/qwen3.8-27b`** no dia a dia; **Gemini `gemini-3.5-flash-lite`** na comparação (CA-05) | Na Groq, os `gpt-oss` **não fazem chamadas paralelas** (RF-08); o Qwen faz. Os limites da Groq são publicados; os do Gemini só aparecem no AI Studio, e a compatibilidade dele com o formato da OpenAI ainda é **beta**. A preço pago, o Flash-Lite é o mais barato dos dois (US$ 0,30 / 2,50 por milhão de tokens de entrada / saída, contra ~US$ 0,80 / 4,00 do Qwen): pode ser ele o modelo da proposta ao cliente |
+| **D1** | Modelos | ✅ **Groq `qwen/qwen3.8-27b`** no dia a dia; **Gemini `gemini-3.5-flash-lite`** na comparação (CA-05) | Na Groq, os `gpt-oss` **não fazem chamadas paralelas** (RF-08); o Qwen faz. Os limites da Groq são publicados; os do Gemini só aparecem no AI Studio, e a compatibilidade dele com o formato da OpenAI ainda é **beta**. A preço pago, o Flash-Lite é o mais barato dos dois (US$ 0,30 / 2,50 por milhão de tokens de entrada / saída, contra ~US$ 0,80 / 4,00 do Qwen): pode ser ele o modelo da proposta ao cliente |
 | **D2** | Como o núcleo sabe que recusou | ✅ **Aceita em 08/10/2026.** Uma **quinta ferramenta, `recusar(motivo)`**, com `motivo` entre `fora_do_escopo`, `sem_evidencia` e `instrucao_suspeita`. Entrou na spec como RF-33 | A RF-02 pede `acao`, mas a resposta final do modelo é texto. "Encaminhar" se deduz (chamou `chamar_humano` ou passou do K); "recusar", não. Como ferramenta, a recusa vira chamada medida pelo mesmo gate. Alternativas piores: resposta final em JSON (frágil junto com ferramentas, e beta no Gemini) ou classificar a resposta depois (outra chamada, e erra) |
-| **D3** | Embeddings | **Locais**, com `fastembed` | Custo zero, nada sai da máquina, não disputa o limite por minuto com o chat, e você já conhece o modelo, inclusive o corte em 128 tokens (~60 palavras em português). Por isso cada trecho é uma pergunta frequente com a resposta, curto |
+| **D3** | Embeddings | ✅ **Locais**, com `fastembed` | Custo zero, nada sai da máquina, não disputa o limite por minuto com o chat, e você já conhece o modelo, inclusive o corte em 128 tokens (~60 palavras em português). Por isso cada trecho é uma pergunta frequente com a resposta, curto |
 
 ## 3. Estrutura
 

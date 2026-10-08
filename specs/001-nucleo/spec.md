@@ -235,7 +235,7 @@ conversas, a preço pago; e em que categoria o agente mais erra. Com isso, a 002
 | | Pergunta | Decisão (08/10/2026) |
 |---|---|---|
 | **Q1** | Que negócio fictício? | **Pequeno.** Pet shop só de produtos, ~15 itens; cobre o que os anúncios da Workana pediam (seção 3) |
-| **Q2** | Provedor e modelos | **Camada gratuita no desenvolvimento**; modelo pago só em projeto de cliente, pago por ele (RS-10, RS-11). Os provedores saem no `plan.md` |
+| **Q2** | Provedor e modelos | **Camada gratuita no desenvolvimento**; modelo pago só em projeto de cliente, pago por ele (RS-10, RS-11). Provedores no `plan.md` (D1, aceita em 08/10: Groq `qwen/qwen3.8-27b` e Gemini `gemini-3.5-flash-lite`) |
 | **Q3** | Busca nos documentos: ferramenta ou toda mensagem? | **Ferramenta** (RF-16) |
 | **Q4** | Laço à mão ou framework? | **À mão** (RS-12). LangGraph pode vir depois, com o gate provando que nada piorou |
 | **Q5** | Casos e limiares | **~25 casos**, crescendo com cada erro achado; limiares da RF-29. Sem gasto de tempo nem de dinheiro além disso; projeto de cliente ganha avaliação própria |
