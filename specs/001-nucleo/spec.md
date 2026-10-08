@@ -1,7 +1,7 @@
 # Spec 001: núcleo do agente
 
-> **Rascunho v1, 08/10/2026.** Nada implementado. Decisões Q1 a Q6 incorporadas (seção 8); Q7 e o "pronto quando"
-> seguem em aberto.
+> **Rascunho v1.1, 08/10/2026.** Nada implementado. Decisões Q1 a Q7 tomadas (seção 8); o "pronto quando" tem a regra
+> dele e segue em discussão (seção 7).
 > Contexto e decisões de produto: vault, `02 - Projetos/Agente-WhatsApp/`.
 > Os valores "iniciais" (N, H, K, T, C) são pontos de partida, não metas: ficam em configuração e se ajustam depois
 > da primeira medição.
@@ -35,8 +35,12 @@ não sabe e encaminha quando deve, numa taxa mensurável e a um custo por conver
   cobrar ficam para depois
 - **RS-07 O CI roda sem chave de API e sem rede.** O modelo fica atrás de uma interface, com uma implementação falsa e
   roteirizada para os testes
-- **RS-08** Segredos só no `.env`, desde o primeiro commit: se o repositório ficar público, o histórico inteiro fica
-  público junto. Logs, cache e relatórios em `logs/` e `outputs/`, fora do git
+- **RS-08 Segredo nunca entra no git, desde o primeiro commit.** O repositório é público, e o histórico inteiro é
+  público junto. Quatro camadas: o `.env` fica fora do git, e o `.env.example` mostra só os nomes das variáveis; um
+  gancho de pre-commit (`.githooks/`, com gitleaks) recusa commit com `.env` ou com chave; o CI varre o histórico
+  inteiro com gitleaks a cada push; e o GitHub roda a varredura de segredos com bloqueio de push. Na 001 o repositório
+  não tem nenhum segredo cadastrado no GitHub, porque o CI roda sem chave (RS-07). Logs, cache e relatórios em
+  `logs/` e `outputs/`, fora do git
 - **RS-09** Tudo roda local. Hospedagem é assunto da 002
 - **RS-10 Custo zero no desenvolvimento.** Desenvolvimento e gate rodam em camada gratuita de API. Modelo pago só em
   projeto de cliente, com o custo de uso por conta dele
@@ -48,8 +52,9 @@ não sabe e encaminha quando deve, numa taxa mensurável e a um custo por conver
 
 ## 3. Escopo
 
-**Dentro:** negócio fictício **pequeno**: um pet shop que só vende produtos ⟪confirmar o ramo⟫, com quatro documentos,
-~15 produtos e ~10 pedidos; laço de chamada de ferramentas; quatro ferramentas; histórico por cliente; estado "com
+**Dentro:** negócio fictício **pequeno**: um pet shop que só vende produtos, com quatro documentos, ~15 produtos e
+~10 pedidos. O ramo cobre o que os anúncios de bot de WhatsApp da Workana pediam em 08/10: *"vendedor que consulta o
+catálogo"*, *"conferir estoque a partir da lista de compras"* e respostas a perguntas frequentes; laço de chamada de ferramentas; quatro ferramentas; histórico por cliente; estado "com
 humano"; política de autonomia; log de auditoria; medição de custo e latência; conjunto de avaliação com gate;
 linha de comando para conversar.
 
@@ -137,7 +142,8 @@ que só existe quando houver dado real (002).
   e fatos proibidos na resposta
 - **RF-27** Começa com **~25 casos** cobrindo: produto (existe, não existe, ambíguo, com erro de digitação); pedido
   (próprio, alheio, inexistente, mal formatado); documentos (com e sem base); pedido de humano; fora do escopo;
-  injeção; referência a mensagem anterior (*"e a de 3 kg?"*, *"quanto custa essa?"*); duas perguntas numa mensagem.
+  injeção; referência a mensagem anterior (*"e a de 3 kg?"*, *"quanto custa essa?"*); duas perguntas numa mensagem;
+  lista de compras (vários produtos numa mensagem).
   **Todo erro encontrado depois vira caso novo**
 - **RF-28** Métricas: acerto de ferramenta, acerto de argumento, acerto de ação, fatos obrigatórios presentes e
   **violações** (fato sem ferramenta por trás, pedido alheio revelado). Violação tem tolerância zero
@@ -172,6 +178,7 @@ que só existe quando houver dado real (002).
 | Modelo pede ferramenta que não existe | Erro estruturado, conta no K (RF-09) |
 | Modelo em laço de ferramentas | Para no K e encaminha (RF-07) |
 | *"Quanto custa a ração X e cadê meu pedido?"* | Duas ferramentas, uma resposta (RF-08) |
+| *"Tem ração X, areia Y e petisco Z?"* | Uma busca por item, uma resposta com o que tem e o que falta (RF-08) |
 | Produto sem estoque | Informa; não promete reposição que não está nos dados (RS-04) |
 | Mensagem numa conversa que está com humano | Não responde; registra (RF-04) |
 | Mensagem de 5.000 caracteres | Truncada num limite configurável; registrada |
@@ -191,7 +198,8 @@ que só existe quando houver dado real (002).
   só a pasta (RF-05)
 - **CA-07** Teste automático: nenhum módulo do núcleo importa biblioteca de canal nem framework de agente (RS-01,
   RS-12)
-- **CA-08** Nada de `logs/`, `outputs/` ou `.env` rastreado pelo git
+- **CA-08** Nada de `logs/`, `outputs/` ou `.env` rastreado pelo git, e o gitleaks não acha nada no histórico inteiro
+  (RS-08)
 - **CA-09** A configuração padrão só aponta para modelos de camada gratuita (RS-10)
 
 **Regressão**
@@ -199,27 +207,33 @@ que só existe quando houver dado real (002).
 - **CR-01** O conjunto de avaliação desta fatia vira o de regressão das próximas: a 002 e a 003 têm de passar no gate
   da 001 sem mudar nenhum caso. Um caso só sai do conjunto com o motivo registrado
 
-## 7. Pronto quando ⟪confirmar⟫
+## 7. Pronto quando ⟪em discussão⟫
 
-CA-01 a CA-09 cumpridos, e o relatório responde:
+**A regra dele (08/10/2026):** o núcleo está pronto quando as próximas decisões ficam específicas demais, ou seja,
+quando o que resta decidir depende de um canal ou de um cliente, e não do agente em si.
 
-1. Qual é o modelo mais barato que passa no gate?
-2. Quanto custaria uma conversa típica, e mil conversas, a preço pago?
-3. Em que categoria o agente mais erra?
+Para a regra poder ser verificada, ela vem com duas peças:
 
-Com isso, a 002 começa.
+1. **Piso medido:** CA-01 a CA-09 cumpridos. Sem ele, a regra fecharia a 001 cedo demais: a primeira pergunta de
+   canal pode aparecer antes de o gate passar
+2. **Estacionamento (seção 11):** toda decisão que aparecer durante a 001 e depender de canal ou de cliente vai para a
+   lista, com a fatia de destino, e não segura a 001. Quando tudo o que estiver pendente na 001 for desse tipo, a
+   regra está cumprida
+
+O relatório final responde: qual é o modelo mais barato que passa no gate; quanto custaria uma conversa típica, e mil
+conversas, a preço pago; e em que categoria o agente mais erra. Com isso, a 002 começa.
 
 ## 8. Decisões
 
 | | Pergunta | Decisão (08/10/2026) |
 |---|---|---|
-| **Q1** | Que negócio fictício? | **Pequeno.** Pet shop só de produtos, ~15 itens: o ramo é sugestão, ⟪confirmar⟫ |
+| **Q1** | Que negócio fictício? | **Pequeno.** Pet shop só de produtos, ~15 itens; cobre o que os anúncios da Workana pediam (seção 3) |
 | **Q2** | Provedor e modelos | **Camada gratuita no desenvolvimento**; modelo pago só em projeto de cliente, pago por ele (RS-10, RS-11). Os provedores saem no `plan.md` |
 | **Q3** | Busca nos documentos: ferramenta ou toda mensagem? | **Ferramenta** (RF-16) |
 | **Q4** | Laço à mão ou framework? | **À mão** (RS-12). LangGraph pode vir depois, com o gate provando que nada piorou |
 | **Q5** | Casos e limiares | **~25 casos**, crescendo com cada erro achado; limiares da RF-29. Sem gasto de tempo nem de dinheiro além disso; projeto de cliente ganha avaliação própria |
 | **Q6** | Quem implementa? | **Fernando**, com o meu apoio, nas partes que vai defender. Divisão na seção 9 |
-| **Q7** | Visibilidade e idioma | ⟪em aberto⟫ Recomendação: privado durante a 001 e público quando ela fechar; a pasta de cada cliente sempre em repositório privado. Spec e código em português, README em inglês |
+| **Q7** | Visibilidade e idioma | **Público**, porque mostra maturidade de código, com cuidado com segredo desde o passo zero (RS-08). A pasta de cada cliente fica sempre em repositório privado. Spec e código em português, README em inglês |
 
 ## 9. Divisão do trabalho
 
@@ -244,3 +258,16 @@ Nas partes dele, eu explico, reviso e escrevo teste quando ele pedir; não escre
   atende a conversa enquanto ela está "pendente" e a passa para "aberta" ao encaminhar
 - **Fora de propósito:** Evolution API, Baileys, whatsapp-web.js e afins. São gateways não oficiais, que violam os
   termos do WhatsApp e arriscam banir o número do cliente
+
+## 11. Estacionamento
+
+Decisões específicas demais para o núcleo (seção 7). Entram aqui assim que aparecem, com a fatia de destino.
+
+| Decisão | Por que não é do núcleo | Destino |
+|---|---|---|
+| Agrupar mensagens seguidas do cliente | Depende de como o canal entrega as mensagens | 002 |
+| Onde o humano responde depois do encaminhamento | Depende do canal; candidato: AgentBot do Chatwoot | 002 |
+| Áudio e imagem | O WhatsApp entrega mídia; a linha de comando, não | 002 |
+| Retenção de dado pessoal (LGPD) | Só existe com dado real | 002 e projeto de cliente |
+| Fonte real de catálogo e pedidos (planilha, ERP, API) | Cada cliente tem a sua; a interface da RF-06 recebe | Projeto de cliente |
+| Ler a conversa da página do WhatsApp Web | Específico da extensão | 003 |
