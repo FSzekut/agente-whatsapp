@@ -28,7 +28,7 @@
 | | Decisão | Proposta | Por quê |
 |---|---|---|---|
 | **D1** | Modelos | **Groq `qwen/qwen3.8-27b`** no dia a dia; **Gemini `gemini-3.5-flash-lite`** na comparação (CA-05) | Na Groq, os `gpt-oss` **não fazem chamadas paralelas** (RF-08); o Qwen faz. Os limites da Groq são publicados; os do Gemini só aparecem no AI Studio, e a compatibilidade dele com o formato da OpenAI ainda é **beta**. A preço pago, o Flash-Lite é o mais barato dos dois (US$ 0,30 / 2,50 por milhão de tokens de entrada / saída, contra ~US$ 0,80 / 4,00 do Qwen): pode ser ele o modelo da proposta ao cliente |
-| **D2** | Como o núcleo sabe que recusou | Uma **quinta ferramenta, `recusar(motivo)`**, com `motivo` entre `fora_do_escopo`, `sem_evidencia` e `instrucao_suspeita`. **Muda a spec**, que hoje tem quatro | A RF-02 pede `acao`, mas a resposta final do modelo é texto. "Encaminhar" se deduz (chamou `chamar_humano` ou passou do K); "recusar", não. Como ferramenta, a recusa vira chamada medida pelo mesmo gate. Alternativas piores: resposta final em JSON (frágil junto com ferramentas, e beta no Gemini) ou classificar a resposta depois (outra chamada, e erra) |
+| **D2** | Como o núcleo sabe que recusou | ✅ **Aceita em 08/10/2026.** Uma **quinta ferramenta, `recusar(motivo)`**, com `motivo` entre `fora_do_escopo`, `sem_evidencia` e `instrucao_suspeita`. Entrou na spec como RF-33 | A RF-02 pede `acao`, mas a resposta final do modelo é texto. "Encaminhar" se deduz (chamou `chamar_humano` ou passou do K); "recusar", não. Como ferramenta, a recusa vira chamada medida pelo mesmo gate. Alternativas piores: resposta final em JSON (frágil junto com ferramentas, e beta no Gemini) ou classificar a resposta depois (outra chamada, e erra) |
 | **D3** | Embeddings | **Locais**, com `fastembed` | Custo zero, nada sai da máquina, não disputa o limite por minuto com o chat, e você já conhece o modelo, inclusive o corte em 128 tokens (~60 palavras em português). Por isso cada trecho é uma pergunta frequente com a resposta, curto |
 
 ## 3. Estrutura
@@ -49,7 +49,8 @@ agente-whatsapp/
 │   │   ├── prompt.py          prompt do sistema a partir da pasta do negócio (RF-18 a RF-22)  F
 │   │   ├── politica.py        autonomia (RF-23)                                               F
 │   │   ├── historico.py       histórico e estado "com humano" (RF-03, RF-04)                  F
-│   │   ├── ferramentas/       registro.py (RF-11); produto, pedido, documentos, humano        F
+│   │   ├── ferramentas/       registro.py (RF-11); produto, pedido, documentos, humano,      F
+│   │   │                      recusa (RF-14 a RF-17, RF-33)
 │   │   └── modelo/            base.py (interface), openai_compat.py (RF-12, RF-13)            F
 │   │                          falso.py (roteirizado, RS-07)                                   C
 │   ├── dados/                 negocio.py, fonte.py, indice.py (RF-05, RF-06, embeddings)      C
@@ -106,7 +107,7 @@ flowchart TD
   monta; não existe no esquema que o modelo vê. `consultar_pedido` recebe só `numero`. É assim que a RS-05 vira
   código: o modelo não tem como pedir o pedido de outro cliente nem se passar por outro cliente
 - **`acao`, por regra:** `encaminhar` se `chamar_humano` foi chamada ou o K estourou; `recusar` se `recusar` foi
-  chamada (D2); senão, `responder`
+  chamada (RF-33); senão, `responder`
 - **`envio`** sai da política (RF-23), por regra, sem modelo
 - **`fontes`** são os trechos que `buscar_documentos` devolveu na mensagem
 - **`uso`** soma os tokens de todas as rodadas, **inclusive os de raciocínio**, que são cobrados como saída
@@ -121,7 +122,7 @@ melhorar.
 | **P0** | Esqueleto: `uv`, requirements, `ruff`, `pytest`, `ci.yml`; pet shop com dados gerados e rascunho dos documentos; `config/modelos.yaml`; modelo falso; comando `diagnostico`, que faz uma chamada **com ferramenta** a cada modelo configurado | C. Você cria as chaves e revisa os documentos | RF-05, RF-06, RF-31; CA-01, CA-08 | CI verde, e o `diagnostico` passa nos dois provedores com as suas chaves |
 | **P1** | **A primeira chamada de ferramenta:** contrato, interface do modelo com a Groq, registro, laço, `buscar_produto`. Em volta: chat, auditoria, custo e o executor do gate | F no núcleo; C em volta | RF-01, RF-02, RF-07, RF-09 a RF-14, RF-24, RF-25, RF-32; ~6 casos de produto | No chat, *"tem ração de 3 kg?"* chama `buscar_produto` com o argumento certo e responde com o preço, e os casos de produto passam na Groq. **A partir daqui, a resposta de entrevista é "construí"** |
 | **P2** | Pedidos e estado: `consultar_pedido` com autorização, histórico, `chamar_humano`, estado "com humano", chamadas paralelas | F; C em `/nova` e `/liberar` | RF-03, RF-04, RF-08, RF-15, RF-17; casos de pedido, humano, injeção, mensagem anterior e lista de compras | CA-04: nenhum pedido alheio vaza, nem com injeção |
-| **P3** | Documentos e comportamento: índice, `buscar_documentos`, prompt, recusa (D2), política de autonomia | F; C no índice e nas checagens | RF-16, RF-18 a RF-23; casos de documentos e fora do escopo; CA-03, CA-07 | Os ~25 casos passam na Groq com zero violação (CA-02) |
+| **P3** | Documentos e comportamento: índice, `buscar_documentos`, prompt, `recusar` (RF-33), política de autonomia | F; C no índice e nas checagens | RF-16, RF-18 a RF-23, RF-33; casos de documentos e fora do escopo; CA-03, CA-07 | Os ~25 casos passam na Groq com zero violação (CA-02) |
 | **P4** | Medição: Gemini só pela configuração, relatório comparativo, pass^k, negócio mínimo | C; você revisa os limiares e aplica a regra do "pronto" | RF-29 completo; CA-05, CA-06, CA-09 | O relatório responde às três perguntas da seção 7 da spec |
 
 **A P1 é o ponto de decisão barato.** Se o Qwen errar ferramenta ou argumento já nos casos de produto, troca-se o

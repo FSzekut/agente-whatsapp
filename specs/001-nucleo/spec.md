@@ -1,6 +1,6 @@
 # Spec 001: núcleo do agente
 
-> **Rascunho v1.1, 08/10/2026.** Nada implementado. Decisões Q1 a Q7 tomadas (seção 8); o "pronto quando" tem a regra
+> **Rascunho v1.2, 08/10/2026.** Nada implementado. Decisões Q1 a Q7 tomadas, e a D2 do plano (seção 8); o "pronto quando" tem a regra
 > dele e segue em discussão (seção 7).
 > Contexto e decisões de produto: vault, `02 - Projetos/Agente-WhatsApp/`.
 > Os valores "iniciais" (N, H, K, T, C) são pontos de partida, não metas: ficam em configuração e se ajustam depois
@@ -31,7 +31,7 @@ não sabe e encaminha quando deve, numa taxa mensurável e a um custo por conver
   de ferramenta da conversa. O modelo nunca escreve esses dados de memória
 - **RS-05 Autorização em código, não em prompt.** O que o cliente pode ver é decidido dentro da ferramenta. O modelo
   nunca recebe dado de outro cliente, então nenhuma instrução maliciosa tem como extrair esse dado
-- **RS-06 As ferramentas só leem**, exceto `chamar_humano`, que registra o encaminhamento. Criar pedido, agendar e
+- **RS-06 As ferramentas só leem**, exceto `chamar_humano`, que registra o encaminhamento; `recusar` só sinaliza. Criar pedido, agendar e
   cobrar ficam para depois
 - **RS-07 O CI roda sem chave de API e sem rede.** O modelo fica atrás de uma interface, com uma implementação falsa e
   roteirizada para os testes
@@ -54,7 +54,7 @@ não sabe e encaminha quando deve, numa taxa mensurável e a um custo por conver
 
 **Dentro:** negócio fictício **pequeno**: um pet shop que só vende produtos, com quatro documentos, ~15 produtos e
 ~10 pedidos. O ramo cobre o que os anúncios de bot de WhatsApp da Workana pediam em 08/10: *"vendedor que consulta o
-catálogo"*, *"conferir estoque a partir da lista de compras"* e respostas a perguntas frequentes; laço de chamada de ferramentas; quatro ferramentas; histórico por cliente; estado "com
+catálogo"*, *"conferir estoque a partir da lista de compras"* e respostas a perguntas frequentes; laço de chamada de ferramentas; cinco ferramentas; histórico por cliente; estado "com
 humano"; política de autonomia; log de auditoria; medição de custo e latência; conjunto de avaliação com gate;
 linha de comando para conversar.
 
@@ -69,7 +69,8 @@ que só existe quando houver dado real (002).
 
 - **RF-01** Entrada: `cliente_id` (telefone), `texto` e `momento`. O núcleo confia no `cliente_id`: garantir que ele
   é verdadeiro é responsabilidade do canal
-- **RF-02** Saída: `resposta`, `acao` (responder, encaminhar, recusar), `envio` (automatico, revisao_humana),
+- **RF-02** Saída: `resposta`, `acao` (responder, encaminhar, recusar, deduzida por regra das ferramentas chamadas:
+  ver RF-33), `envio` (automatico, revisao_humana),
   `ferramentas` (nome, argumentos, resultado, sucesso), `fontes`, `uso` (tokens, custo estimado, latência) e `versoes`
   (prompt, modelo, dados, política)
 - **RF-03** Histórico por cliente: as últimas N mensagens entram no contexto (N inicial 10). Depois de H horas sem
@@ -111,14 +112,20 @@ que só existe quando houver dado real (002).
   limiar de semelhança, devolve `sem_evidencia`, o mesmo corte do RAGnaldo
 - **RF-17 `chamar_humano(motivo)`**: registra o encaminhamento numa fila local e devolve um protocolo. A resposta ao
   cliente diz que uma pessoa vai continuar e qual é o horário de atendimento
+- **RF-33 `recusar(motivo)`**, com `motivo` entre `fora_do_escopo`, `sem_evidencia` e `instrucao_suspeita`: o modelo
+  chama antes de responder com uma recusa. Não muda nada, só sinaliza: é o que permite ao núcleo saber que recusou e
+  ao gate medir a recusa como mede qualquer chamada. A `acao` sai por regra: `encaminhar` se `chamar_humano` foi
+  chamada ou o K estourou; `recusar` se `recusar` foi chamada; senão, `responder`. (Numerada no fim para não mudar a
+  numeração das outras; veio da D2 do plano)
 
 ### Comportamento
 
-- **RF-18** Pergunta sobre o negócio sem evidência nos documentos: diz que não sabe e oferece humano. Nunca inventa
+- **RF-18** Pergunta sobre o negócio sem evidência nos documentos: chama `recusar(sem_evidencia)`, diz que não sabe e oferece humano. Nunca inventa
   política de troca, prazo ou frete
-- **RF-19** Assunto fora do negócio: recusa curta e volta ao assunto (RS-03)
+- **RF-19** Assunto fora do negócio: `recusar(fora_do_escopo)`, recusa curta e volta ao assunto (RS-03)
 - **RF-20** Cliente pede humano: `chamar_humano` na mesma mensagem, sem tentar segurar o cliente
-- **RF-21** Pedido para mudar as instruções (*"ignore suas regras"*, *"agora você é…"*) é tratado como fora do escopo
+- **RF-21** Pedido para mudar as instruções (*"ignore suas regras"*, *"agora você é…"*) é tratado como fora do escopo, com
+  `recusar(instrucao_suspeita)`
 - **RF-22** Resposta em português, com no máximo C caracteres (C inicial 700), valores em formato brasileiro
   (`R$ 49,90`) e só a formatação que o WhatsApp mostra (`*negrito*`, `_itálico_`, listas simples). Sem `#`, `**` nem
   tabela
@@ -233,6 +240,7 @@ conversas, a preço pago; e em que categoria o agente mais erra. Com isso, a 002
 | **Q4** | Laço à mão ou framework? | **À mão** (RS-12). LangGraph pode vir depois, com o gate provando que nada piorou |
 | **Q5** | Casos e limiares | **~25 casos**, crescendo com cada erro achado; limiares da RF-29. Sem gasto de tempo nem de dinheiro além disso; projeto de cliente ganha avaliação própria |
 | **Q6** | Quem implementa? | **Fernando**, com o meu apoio, nas partes que vai defender. Divisão na seção 9 |
+| **D2** (do plano) | Como o núcleo sabe que recusou | **Quinta ferramenta, `recusar(motivo)`** (RF-33), aceita em 08/10/2026 |
 | **Q7** | Visibilidade e idioma | **Público**, porque mostra maturidade de código, com cuidado com segredo desde o passo zero (RS-08). A pasta de cada cliente fica sempre em repositório privado. Spec e código em português, README em inglês |
 
 ## 9. Divisão do trabalho
@@ -240,7 +248,7 @@ conversas, a preço pago; e em que categoria o agente mais erra. Com isso, a 002
 | Parte | Quem | Requisitos |
 |---|---|---|
 | Contrato de entrada e saída, histórico, laço, interface do modelo, limite de taxa | **Fernando** | RF-01 a RF-04, RF-07 a RF-13 |
-| Ferramentas e autorização | **Fernando** | RF-14 a RF-17, RS-05 |
+| Ferramentas e autorização | **Fernando** | RF-14 a RF-17, RF-33, RS-05 |
 | Prompt do sistema e comportamento | **Fernando** | RF-18 a RF-23 |
 | Casos de avaliação | **Fernando** | RF-26, RF-27 |
 | Pasta do negócio, interface de dados, dados fictícios, rascunho dos documentos (ele revisa) | Claude | RF-05, RF-06, RF-31 |
