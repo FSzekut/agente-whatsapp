@@ -12,9 +12,9 @@ target market.
 One core, three deliveries. The core is the same in all of them; only the last step changes: suggest, wait for
 approval, or send.
 
-| Slice | What | Channel | Autonomy | Spec |
+| Slice | What | Channel | Autonomy | Docs |
 |---|---|---|---|---|
-| 001 | The core, channel-free: tools, document search, evaluation, cost | Command line | Any, by config | [specs/001-nucleo/spec.md](specs/001-nucleo/spec.md) |
+| 001 | The core, channel-free: tools, document search, evaluation, cost | Command line | Any, by config | [spec](specs/001-nucleo/spec.md) · [plan](specs/001-nucleo/plan.md) · [tasks](specs/001-nucleo/tasks.md) |
 | 002 | Official WhatsApp Cloud API (Meta) | WhatsApp | `approve`, `auto` | — |
 | 003 | Browser extension on WhatsApp Web | WhatsApp Web | `suggest`: a human always sends | — |
 
