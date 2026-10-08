@@ -1,0 +1,1 @@
+# Dependências do projeto. Toda instalação passa por aqui antes (uv pip install -r requirements.txt).
