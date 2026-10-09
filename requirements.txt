@@ -1,1 +1,7 @@
 # Dependências do projeto. Toda instalação passa por aqui antes (uv pip install -r requirements.txt).
+# Ferramenta de desenvolvimento não entra aqui: veja requirements-dev.txt.
+openai>=3.26,<4          # cliente único: Groq e Gemini aceitam o formato da OpenAI (plano, seção 1)
+pydantic>=2.14,<3        # contrato e argumentos das ferramentas (RF-01, RF-11)
+rapidfuzz>=3.14,<4       # busca tolerante a erro de digitação (RF-14)
+pyyaml>=6.0,<7           # negócio, modelos e casos, escritos à mão
+python-dotenv>=1.2,<2    # chaves no .env (RS-08)

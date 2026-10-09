@@ -1,0 +1,23 @@
+# Só configuração de ferramenta. As dependências moram nos requirements*.txt.
+
+[tool.ruff]
+# Regras fixadas de propósito: sem elas, vale o padrão da versão instalada, que muda
+# entre versões, e o CI passaria a discordar do computador sem ninguém mexer no código.
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+  "E",    # erros de estilo do pycodestyle
+  "F",    # erros reais do pyflakes: variável não usada, import morto
+  "W",    # avisos do pycodestyle
+  "I",    # ordem dos imports
+  "UP",   # sintaxe antiga que o Python 3.12 já permite escrever melhor
+  "B",    # armadilhas comuns (bugbear)
+  "SIM",  # trechos que dá para simplificar
+  "RUF",  # regras do próprio ruff
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -4,8 +4,8 @@ A reusable customer-service agent for WhatsApp: **tool calling** (catalog lookup
 answers grounded in the business's own documents (with refusal when there is no evidence), and an **evaluation gate**
 that measures tool accuracy and cost per conversation before anything ships.
 
-**Status:** specification. Nothing implemented yet. Specs are written in Brazilian Portuguese, the language of the
-target market.
+**Status:** slice 001 under construction, one task at a time ([tasks](specs/001-nucleo/tasks.md)). Specs are
+written in Brazilian Portuguese, the language of the target market.
 
 ## How it is cut
 
@@ -25,6 +25,19 @@ Design rules that hold in every slice:
   injected instruction can extract it
 - **Business-only.** Off-topic requests are refused, as Meta's WhatsApp Business policy has required since January 2026
 - **Zero cost in development.** Free API tiers with fictional data only; paid models only in client projects
+
+## Development
+
+Python 3.12 and [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv venv
+uv pip install -r requirements-dev.txt
+.venv/bin/ruff check .
+.venv/bin/pytest
+```
+
+`requirements.txt` is what the agent needs to run; `requirements-dev.txt` adds the test and lint tools.
 
 ## Secrets
 
