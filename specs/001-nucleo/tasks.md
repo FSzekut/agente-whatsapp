@@ -19,7 +19,7 @@ para você deixar verde. **C** = Claude implementa; você revisa.
   `pyyaml`, `python-dotenv`) e `requirements-dev.txt` (`pytest`, `ruff`), com faixas de versão como no `rag_do_zero`;
   `pyproject.toml` com a configuração do `ruff` e do `pytest`; pacote `src/agente/`.
   **Pronto:** `ruff check` limpo e `pytest` rodando um teste de fumaça.
-- [ ] **T02 · C · CI.** `ci.yml`: `ruff` e `pytest`, sem nenhum segredo, e um passo que falha se algo de `logs/`,
+- [x] **T02 · C · CI.** `ci.yml`: `ruff` e `pytest`, sem nenhum segredo, e um passo que falha se algo de `logs/`,
   `outputs/` ou um `.env` estiver rastreado; versões das actions alinhadas com o `rag_do_zero`.
   **Pronto:** CI verde no GitHub (CA-01, CA-08).
 - [ ] **T03 · C · O pet shop.** `scripts/gerar_dados.py` com semente fixa (RF-31): ~15 produtos com variação de
