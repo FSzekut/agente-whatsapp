@@ -1,0 +1,30 @@
+# O pet shop fictício da spec 001 (RS-02). Tudo que é do negócio vive nesta pasta
+# (RF-05): trocar de negócio é trocar a pasta, sem mudar código.
+#
+# Escrito à mão. catalogo.csv, clientes.csv e pedidos.json saem de
+# scripts/gerar_dados.py; documentos/ também é escrito à mão (RF-31).
+
+nome: Empório Quatro Patas
+descricao: Pet shop de bairro que só vende produtos para cães e gatos.
+
+# Como o agente escreve. Entra no prompt do sistema (RF-22 cuida do formato).
+tom: >-
+  Simpático e direto, tratando o cliente por "você". Frases curtas, sem gíria
+  e no máximo um emoji por mensagem.
+
+fuso: America/Sao_Paulo
+horario:
+  segunda a sexta: 9h às 19h
+  sábado: 9h às 14h
+  domingo e feriados: fechado
+
+# RF-23. Nos modos sugerir e aprovar, tudo sai com envio = revisao_humana.
+autonomia:
+  modo: auto
+  # Só vale no modo auto: a mensagem sai direto se a ação e TODAS as ferramentas
+  # usadas estiverem nas listas. O resto sai com envio = revisao_humana. Pedido
+  # fica de fora de propósito: dado de pedido passa por uma pessoa até o gate
+  # provar que a autorização (RS-05) segura.
+  auto:
+    acoes: [responder, recusar]
+    ferramentas: [buscar_produto, buscar_documentos, recusar]

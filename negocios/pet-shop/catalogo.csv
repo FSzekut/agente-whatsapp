@@ -1,0 +1,16 @@
+id,nome,categoria,especie,preco,estoque
+P01,Ração Vitalis Cães Adultos Frango 3 kg,ração,cão,69.90,9
+P02,Ração Vitalis Cães Adultos Frango 10 kg,ração,cão,189.90,22
+P03,Ração Vitalis Cães Adultos Frango 15 kg,ração,cão,259.90,0
+P04,Ração Vitalis Cães Filhotes 3 kg,ração,cão,79.90,34
+P05,Ração Felinus Gatos Adultos Salmão 1 kg,ração,gato,34.90,34
+P06,Ração Felinus Gatos Adultos Salmão 3 kg,ração,gato,89.90,8
+P07,Areia Higiênica Grão Fino 4 kg,higiene,gato,24.90,16
+P08,Areia Higiênica Grão Fino 12 kg,higiene,gato,59.90,40
+P09,Petisco Bifinho de Frango 65 g,petisco,cão,12.90,37
+P10,Sachê Cremoso de Salmão para Gatos 4 un,petisco,gato,15.90,28
+P11,Tapete Higiênico 30 un,higiene,cão,49.90,38
+P12,Tapete Higiênico 50 un,higiene,cão,74.90,37
+P13,Coleira Ajustável Nylon P,acessório,cão,29.90,33
+P14,Coleira Ajustável Nylon M,acessório,cão,34.90,39
+P15,Arranhador Torre 60 cm,acessório,gato,149.90,30

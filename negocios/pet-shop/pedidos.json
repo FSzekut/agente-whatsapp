@@ -1,0 +1,244 @@
+[
+  {
+    "numero": 120,
+    "cliente": "5500955681518",
+    "data": "2026-09-14",
+    "status": "entregue",
+    "previsao_entrega": null,
+    "itens": [
+      {
+        "produto": "P05",
+        "nome": "Ração Felinus Gatos Adultos Salmão 1 kg",
+        "quantidade": 2,
+        "preco_unitario": "34.90"
+      },
+      {
+        "produto": "P07",
+        "nome": "Areia Higiênica Grão Fino 4 kg",
+        "quantidade": 2,
+        "preco_unitario": "24.90"
+      },
+      {
+        "produto": "P11",
+        "nome": "Tapete Higiênico 30 un",
+        "quantidade": 2,
+        "preco_unitario": "49.90"
+      }
+    ],
+    "frete": "0.00",
+    "total": "219.40"
+  },
+  {
+    "numero": 121,
+    "cliente": "5500955681518",
+    "data": "2026-09-15",
+    "status": "cancelado",
+    "previsao_entrega": null,
+    "itens": [
+      {
+        "produto": "P05",
+        "nome": "Ração Felinus Gatos Adultos Salmão 1 kg",
+        "quantidade": 1,
+        "preco_unitario": "34.90"
+      },
+      {
+        "produto": "P14",
+        "nome": "Coleira Ajustável Nylon M",
+        "quantidade": 1,
+        "preco_unitario": "34.90"
+      }
+    ],
+    "frete": "12.90",
+    "total": "82.70"
+  },
+  {
+    "numero": 122,
+    "cliente": "5500976169871",
+    "data": "2026-09-16",
+    "status": "entregue",
+    "previsao_entrega": null,
+    "itens": [
+      {
+        "produto": "P08",
+        "nome": "Areia Higiênica Grão Fino 12 kg",
+        "quantidade": 2,
+        "preco_unitario": "59.90"
+      },
+      {
+        "produto": "P10",
+        "nome": "Sachê Cremoso de Salmão para Gatos 4 un",
+        "quantidade": 2,
+        "preco_unitario": "15.90"
+      },
+      {
+        "produto": "P15",
+        "nome": "Arranhador Torre 60 cm",
+        "quantidade": 1,
+        "preco_unitario": "149.90"
+      }
+    ],
+    "frete": "0.00",
+    "total": "301.50"
+  },
+  {
+    "numero": 123,
+    "cliente": "5500955681518",
+    "data": "2026-09-18",
+    "status": "entregue",
+    "previsao_entrega": null,
+    "itens": [
+      {
+        "produto": "P08",
+        "nome": "Areia Higiênica Grão Fino 12 kg",
+        "quantidade": 2,
+        "preco_unitario": "59.90"
+      },
+      {
+        "produto": "P09",
+        "nome": "Petisco Bifinho de Frango 65 g",
+        "quantidade": 2,
+        "preco_unitario": "12.90"
+      },
+      {
+        "produto": "P15",
+        "nome": "Arranhador Torre 60 cm",
+        "quantidade": 1,
+        "preco_unitario": "149.90"
+      }
+    ],
+    "frete": "0.00",
+    "total": "295.50"
+  },
+  {
+    "numero": 124,
+    "cliente": "5500976169871",
+    "data": "2026-09-20",
+    "status": "entregue",
+    "previsao_entrega": null,
+    "itens": [
+      {
+        "produto": "P08",
+        "nome": "Areia Higiênica Grão Fino 12 kg",
+        "quantidade": 1,
+        "preco_unitario": "59.90"
+      },
+      {
+        "produto": "P13",
+        "nome": "Coleira Ajustável Nylon P",
+        "quantidade": 2,
+        "preco_unitario": "29.90"
+      }
+    ],
+    "frete": "12.90",
+    "total": "132.60"
+  },
+  {
+    "numero": 125,
+    "cliente": "5500941707536",
+    "data": "2026-09-23",
+    "status": "enviado",
+    "previsao_entrega": "2026-09-26",
+    "itens": [
+      {
+        "produto": "P05",
+        "nome": "Ração Felinus Gatos Adultos Salmão 1 kg",
+        "quantidade": 2,
+        "preco_unitario": "34.90"
+      },
+      {
+        "produto": "P09",
+        "nome": "Petisco Bifinho de Frango 65 g",
+        "quantidade": 1,
+        "preco_unitario": "12.90"
+      },
+      {
+        "produto": "P13",
+        "nome": "Coleira Ajustável Nylon P",
+        "quantidade": 2,
+        "preco_unitario": "29.90"
+      }
+    ],
+    "frete": "12.90",
+    "total": "155.40"
+  },
+  {
+    "numero": 126,
+    "cliente": "5500941707536",
+    "data": "2026-09-25",
+    "status": "enviado",
+    "previsao_entrega": "2026-09-27",
+    "itens": [
+      {
+        "produto": "P11",
+        "nome": "Tapete Higiênico 30 un",
+        "quantidade": 2,
+        "preco_unitario": "49.90"
+      }
+    ],
+    "frete": "12.90",
+    "total": "112.70"
+  },
+  {
+    "numero": 127,
+    "cliente": "5500976169871",
+    "data": "2026-09-27",
+    "status": "em_separacao",
+    "previsao_entrega": "2026-09-28",
+    "itens": [
+      {
+        "produto": "P04",
+        "nome": "Ração Vitalis Cães Filhotes 3 kg",
+        "quantidade": 2,
+        "preco_unitario": "79.90"
+      }
+    ],
+    "frete": "0.00",
+    "total": "159.80"
+  },
+  {
+    "numero": 128,
+    "cliente": "5500941707536",
+    "data": "2026-09-29",
+    "status": "em_separacao",
+    "previsao_entrega": "2026-10-01",
+    "itens": [
+      {
+        "produto": "P02",
+        "nome": "Ração Vitalis Cães Adultos Frango 10 kg",
+        "quantidade": 1,
+        "preco_unitario": "189.90"
+      }
+    ],
+    "frete": "0.00",
+    "total": "189.90"
+  },
+  {
+    "numero": 129,
+    "cliente": "5500944729405",
+    "data": "2026-10-02",
+    "status": "aguardando_pagamento",
+    "previsao_entrega": "2026-10-05",
+    "itens": [
+      {
+        "produto": "P02",
+        "nome": "Ração Vitalis Cães Adultos Frango 10 kg",
+        "quantidade": 1,
+        "preco_unitario": "189.90"
+      },
+      {
+        "produto": "P14",
+        "nome": "Coleira Ajustável Nylon M",
+        "quantidade": 1,
+        "preco_unitario": "34.90"
+      },
+      {
+        "produto": "P15",
+        "nome": "Arranhador Torre 60 cm",
+        "quantidade": 1,
+        "preco_unitario": "149.90"
+      }
+    ],
+    "frete": "0.00",
+    "total": "374.70"
+  }
+]
