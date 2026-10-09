@@ -84,6 +84,7 @@ def test_config_tem_os_dois_modelos_da_d1(modelos):
     assert modelos["groq-qwen"].preco_pago_usd_milhao.saida == Decimal("4.00")
     assert modelos["gemini-flash-lite"].preco_pago_usd_milhao.entrada == Decimal("0.3")
     assert modelos["groq-qwen"].limites.tokens_dia == 200_000
+    assert modelos["gemini-flash-lite"].limites.req_dia == 500
 
 
 def test_toda_chave_da_config_esta_no_env_example(modelos):

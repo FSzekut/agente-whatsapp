@@ -23,6 +23,9 @@ gemini-flash-lite:
   modelo: gemini-3.5-flash-lite
   chave_env: GEMINI_API_KEY
   extra: {reasoning_effort: minimal}
-  limites: {}  # o Google não publica; copiar do AI Studio na T00
+  # O Google não publica os limites; vêm do painel do AI Studio (T00). O tokens_min
+  # é só de ENTRADA, como o painel mostra. Aqui o limite que aperta é o de pedidos;
+  # na Groq é o de tokens.
+  limites: {req_min: 15, req_dia: 500, tokens_min: 250000}
   preco_pago_usd_milhao: {entrada: 0.30, saida: 2.50}
-  fonte: ai.google.dev/gemini-api/docs/pricing (atualizada em 07/10/2026), conferido em 09/10/2026
+  fonte: ai.google.dev/gemini-api/docs/pricing (atualizada em 07/10/2026), conferido em 09/10/2026; limites do AI Studio em 09/10/2026

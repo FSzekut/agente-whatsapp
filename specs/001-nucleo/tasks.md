@@ -12,10 +12,11 @@ para você deixar verde. **C** = Claude implementa; você revisa.
 
 ## P0: esqueleto
 
-- [ ] **T00 · F · Chaves da camada gratuita.** Criar a chave no Google AI Studio e na Groq; copiar `.env.example`
+- [x] **T00 · F · Chaves da camada gratuita.** Criar a chave no Google AI Studio e na Groq; copiar `.env.example`
   para `.env` e preencher; anotar os limites que o AI Studio mostra para o `gemini-3.5-flash-lite`.
   **Pronto:** a T05 passa com as suas chaves.
-  **09/10:** chaves criadas e `diagnostico` verde nos dois modelos. **Falta anotar os limites do AI Studio.**
+  **Feito em 09/10:** chaves criadas e `diagnostico` verde nos dois modelos. Limites do AI Studio para o
+  `gemini-3.5-flash-lite`: **15 pedidos/min, 250 mil tokens de entrada/min, 500 pedidos/dia**, em `config/modelos.yaml`.
 - [x] **T01 · C · Ambiente.** `uv venv` com Python 3.12; `requirements.txt` (`openai`, `pydantic`, `rapidfuzz`,
   `pyyaml`, `python-dotenv`) e `requirements-dev.txt` (`pytest`, `ruff`), com faixas de versão como no `rag_do_zero`;
   `pyproject.toml` com a configuração do `ruff` e do `pytest`; pacote `src/agente/`.
