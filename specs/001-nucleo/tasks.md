@@ -15,6 +15,7 @@ para você deixar verde. **C** = Claude implementa; você revisa.
 - [ ] **T00 · F · Chaves da camada gratuita.** Criar a chave no Google AI Studio e na Groq; copiar `.env.example`
   para `.env` e preencher; anotar os limites que o AI Studio mostra para o `gemini-3.5-flash-lite`.
   **Pronto:** a T05 passa com as suas chaves.
+  **09/10:** chaves criadas e `diagnostico` verde nos dois modelos. **Falta anotar os limites do AI Studio.**
 - [x] **T01 · C · Ambiente.** `uv venv` com Python 3.12; `requirements.txt` (`openai`, `pydantic`, `rapidfuzz`,
   `pyyaml`, `python-dotenv`) e `requirements-dev.txt` (`pytest`, `ruff`), com faixas de versão como no `rag_do_zero`;
   `pyproject.toml` com a configuração do `ruff` e do `pytest`; pacote `src/agente/`.
@@ -31,10 +32,12 @@ para você deixar verde. **C** = Claude implementa; você revisa.
   define a interface de fonte de dados e a leitura de arquivo (RF-06). A fonte devolve o pedido **com** o dono; quem
   decide se o cliente pode vê-lo é a sua ferramenta (T14).
   **Pronto:** testes carregam o pet shop; pedido inexistente devolve "não existe".
-- [ ] **T05 · C · Modelos e diagnóstico.** `config/modelos.yaml` com os dois modelos da D1, limites e preço pago
+- [x] **T05 · C · Modelos e diagnóstico.** `config/modelos.yaml` com os dois modelos da D1, limites e preço pago
   (conferir o preço da Groq); `diagnostico` faz **uma** chamada com uma ferramenta de teste a cada modelo e diz se
   veio uma chamada de ferramenta, com latência e tokens. É de propósito só uma chamada, não o laço (o laço é seu).
   **Pronto:** com as suas chaves, os dois modelos devolvem chamada de ferramenta; sem chave, mensagem clara.
+  **Feito em 09/10:** os dois chamaram `somar` com os argumentos certos. Groq 0,53 s, 358 tokens de entrada e 92 de
+  saída (48 de raciocínio); Gemini 0,95 s, 106 e 23. O Gemini devolveu os argumentos em outra ordem (`b` antes de `a`).
 
 ## P1: a primeira chamada de ferramenta
 
@@ -141,4 +144,6 @@ para você deixar verde. **C** = Claude implementa; você revisa.
 | 09/10/2026 | *(minha)* `negocio.yaml` do pet shop em modo `auto`, com `consultar_pedido` fora da lista (T03) | O gate passa a exercitar os dois envios, e dado de pedido passa por uma pessoa até a CA-04 passar. Saída: `aprovar` |
 | 09/10/2026 | *(minha)* Projeto instalável (`uv pip install -e .`) só para ganhar o comando `agente`, com as dependências lidas do `requirements.txt` (T05) | Uma fonte só para as dependências. Saída: `PYTHONPATH=src python -m agente.cli` |
 | 09/10/2026 | *(minha)* O `diagnostico` usa uma ferramenta neutra, `somar(a, b)` (T05) | Não antecipa o desenho de `buscar_produto` (T09) |
-| 09/10/2026 | ⟪aberta⟫ Na Groq, o raciocínio do Qwen tem padrão `none`; o plano usa `low` | Fica `low` até a P1 medir. Se o acerto não cair com `none`, ele corta custo e latência |
+| 09/10/2026 | ⟪aberta⟫ Na Groq, o raciocínio do Qwen tem padrão `none`; o plano usa `low` | Fica `low` até a P1 medir. Se o acerto não cair com `none`, ele corta custo e latência. **Primeira medida (09/10, `diagnostico`):** com `low`, 48 dos 92 tokens de saída foram raciocínio, numa soma de dois números |
+| 09/10/2026 | Achado: o mesmo pedido com uma ferramenta custou **358 tokens de entrada na Groq e 106 no Gemini** | O template do Qwen escreve as definições de ferramenta no prompt. Com 200 mil tokens/dia na Groq, descrição de ferramenta curta é orçamento |
+| 09/10/2026 | Achado: o Gemini devolve os argumentos em outra ordem | O laço lê argumento por nome, nunca por posição |
