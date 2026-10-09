@@ -1,4 +1,24 @@
-# Só configuração de ferramenta. As dependências moram nos requirements*.txt.
+# As dependências moram no requirements.txt, e o pacote lê de lá: uma fonte só.
+# O projeto é instalável só para ganhar o comando `agente` (uv pip install -e .).
+
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agente-whatsapp"
+version = "0.1.0"
+requires-python = ">=3.12"
+dynamic = ["dependencies"]
+
+[project.scripts]
+agente = "agente.cli:main"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.ruff]
 # Regras fixadas de propósito: sem elas, vale o padrão da versão instalada, que muda

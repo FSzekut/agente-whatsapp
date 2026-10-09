@@ -1,0 +1,28 @@
+# Modelos que o núcleo sabe chamar (D1 do plano). Trocar de modelo é trocar o nome
+# usado, sem mudar código (RF-12). Todos aqui são de camada gratuita (RS-10, CA-09).
+#
+# extra:     vai no corpo da requisição como está (parâmetros próprios do provedor)
+# limites:   da camada gratuita; o gate se mantém abaixo deles (RF-13)
+# preco_pago_usd_milhao: preço da camada PAGA do mesmo modelo, em US$ por milhão de
+#            tokens. É o custo que vai para a proposta ao cliente (RF-25). Raciocínio
+#            é cobrado como saída.
+
+groq-qwen:
+  base_url: https://api.groq.com/openai/v1
+  modelo: qwen/qwen3.8-27b
+  chave_env: GROQ_API_KEY
+  # Na Groq, o padrão do Qwen é reasoning_effort "none" (sem raciocínio); "low" é
+  # escolha do plano (seção 6) e a P1 mede se vale o custo.
+  extra: {reasoning_effort: low, reasoning_format: hidden}
+  limites: {req_min: 30, req_dia: 1000, tokens_min: 8000, tokens_dia: 200000}
+  preco_pago_usd_milhao: {entrada: 0.80, saida: 4.00}
+  fonte: console.groq.com (página do modelo e rate limits), conferido em 09/10/2026
+
+gemini-flash-lite:
+  base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+  modelo: gemini-3.5-flash-lite
+  chave_env: GEMINI_API_KEY
+  extra: {reasoning_effort: minimal}
+  limites: {}  # o Google não publica; copiar do AI Studio na T00
+  preco_pago_usd_milhao: {entrada: 0.30, saida: 2.50}
+  fonte: ai.google.dev/gemini-api/docs/pricing (atualizada em 07/10/2026), conferido em 09/10/2026

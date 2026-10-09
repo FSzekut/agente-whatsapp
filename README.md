@@ -32,12 +32,20 @@ Python 3.12 and [uv](https://docs.astral.sh/uv/):
 
 ```bash
 uv venv
-uv pip install -r requirements-dev.txt
+uv pip install -r requirements-dev.txt -e .
 .venv/bin/ruff check .
 .venv/bin/pytest
 ```
 
-`requirements.txt` is what the agent needs to run; `requirements-dev.txt` adds the test and lint tools.
+`requirements.txt` is what the agent needs to run; `requirements-dev.txt` adds the test and lint tools. The editable
+install only adds the `agente` command; its dependencies are read from `requirements.txt`.
+
+To check that your API keys work and that each configured model returns a tool call, copy `.env.example` to `.env`,
+fill it in, and run:
+
+```bash
+.venv/bin/agente diagnostico
+```
 
 ## Secrets
 
