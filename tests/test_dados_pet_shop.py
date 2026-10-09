@@ -11,6 +11,8 @@ from pathlib import Path
 
 import pytest
 
+from agente.dados.negocio import ler_documento
+
 RAIZ = Path(__file__).resolve().parent.parent
 PET_SHOP = RAIZ / "negocios" / "pet-shop"
 GERADOS = ["catalogo.csv", "clientes.csv", "pedidos.json"]
@@ -102,29 +104,21 @@ def test_casos_de_borda_da_spec_existem(catalogo, clientes, pedidos):
     assert len({p["cliente"] for p in pedidos}) >= 2  # há pedido alheio para testar
 
 
-def trechos(caminho: Path) -> list[tuple[str, str]]:
-    """Um trecho por pergunta: o título `## ` e o parágrafo que vem depois."""
-    texto = caminho.read_text(encoding="utf-8")
-    blocos = re.split(r"^## ", texto, flags=re.MULTILINE)[1:]
-    return [
-        (pergunta.strip(), " ".join(resposta.split()))
-        for pergunta, _, resposta in (b.partition("\n") for b in blocos)
-    ]
-
-
 def test_quatro_documentos_e_todo_trecho_cabe_no_embedding():
     documentos = sorted((PET_SHOP / "documentos").glob("*.md"))
     assert len(documentos) == 4
     for documento in documentos:
-        assert trechos(documento), documento.name
-        for pergunta, resposta in trechos(documento):
-            palavras = len(f"{pergunta} {resposta}".split())
-            assert palavras <= MAX_PALAVRAS_POR_TRECHO, (documento.name, pergunta)
+        for trecho in ler_documento(documento).trechos:
+            palavras = len(trecho.texto.split())
+            assert palavras <= MAX_PALAVRAS_POR_TRECHO, (
+                documento.name,
+                trecho.pergunta,
+            )
 
 
 def test_documento_diz_que_a_loja_so_vende_produtos():
     texto = " ".join(
-        " ".join(r for _, r in trechos(d))
+        " ".join(t.resposta for t in ler_documento(d).trechos)
         for d in (PET_SHOP / "documentos").glob("*.md")
     )
     assert "só vende produtos" in texto

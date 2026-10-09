@@ -27,7 +27,7 @@ para você deixar verde. **C** = Claude implementa; você revisa.
   autonomia; rascunho dos quatro documentos, incluindo *"só vendemos produtos; não fazemos banho e tosa"*.
   **Pronto:** a mesma semente gera arquivos idênticos; todo pedido tem cliente; nenhum trecho passa de ~55 palavras
   (D3). **Você revisa os documentos.**
-- [ ] **T04 · C · Pasta do negócio e fonte de dados.** `dados/negocio.py` carrega a pasta (RF-05); `dados/fonte.py`
+- [x] **T04 · C · Pasta do negócio e fonte de dados.** `dados/negocio.py` carrega a pasta (RF-05); `dados/fonte.py`
   define a interface de fonte de dados e a leitura de arquivo (RF-06). A fonte devolve o pedido **com** o dono; quem
   decide se o cliente pode vê-lo é a sua ferramenta (T14).
   **Pronto:** testes carregam o pet shop; pedido inexistente devolve "não existe".
