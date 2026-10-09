@@ -137,3 +137,8 @@ para você deixar verde. **C** = Claude implementa; você revisa.
 | 08/10/2026 | D3: embeddings locais com `fastembed` | Custo zero, nada sai da máquina, sem disputar o limite por minuto |
 | 08/10/2026 | O `diagnostico` (T05) faz uma chamada só, não o laço | O laço é a parte que você vai defender |
 | 08/10/2026 | `fastembed` só entra no `requirements.txt` na T19 | Ninguém precisa do modelo antes da P3 |
+| 09/10/2026 | *(minha)* Telefones fictícios com DDD 00 (T03) | O DDD 00 não existe: nenhum número do repositório público pode ser de alguém |
+| 09/10/2026 | *(minha)* `negocio.yaml` do pet shop em modo `auto`, com `consultar_pedido` fora da lista (T03) | O gate passa a exercitar os dois envios, e dado de pedido passa por uma pessoa até a CA-04 passar. Saída: `aprovar` |
+| 09/10/2026 | *(minha)* Projeto instalável (`uv pip install -e .`) só para ganhar o comando `agente`, com as dependências lidas do `requirements.txt` (T05) | Uma fonte só para as dependências. Saída: `PYTHONPATH=src python -m agente.cli` |
+| 09/10/2026 | *(minha)* O `diagnostico` usa uma ferramenta neutra, `somar(a, b)` (T05) | Não antecipa o desenho de `buscar_produto` (T09) |
+| 09/10/2026 | ⟪aberta⟫ Na Groq, o raciocínio do Qwen tem padrão `none`; o plano usa `low` | Fica `low` até a P1 medir. Se o acerto não cair com `none`, ele corta custo e latência |
