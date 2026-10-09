@@ -1,0 +1,52 @@
+# O portão do código. Roda a cada push na main e em todo pull request.
+#
+# Nenhum secret é usado aqui, de propósito (RS-07): os testes rodam contra o modelo
+# falso, e um pull request de fora roda este arquivo sem acesso a chave nenhuma.
+# A varredura de segredos no histórico fica no segredos.yml.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  portao:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Instalar dependências
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Formatação (ruff)
+        run: ruff format --check .
+
+      - name: Testes (pytest)
+        run: pytest
+
+      # CA-08: o .gitignore protege o que ainda não foi adicionado, mas não desfaz um
+      # `git add -f`. Aqui se confere o que o git de fato rastreia.
+      - name: Nada de logs/, outputs/ ou .env no git
+        run: |
+          rastreados=$(git ls-files | grep -E '^(logs|outputs)/|(^|/)\.env($|\.)' \
+            | grep -vE '(^|/)\.env\.example$' || true)
+          if [ -n "$rastreados" ]; then
+            echo "Arquivos que não deviam estar no git (CA-08):"
+            echo "$rastreados"
+            exit 1
+          fi
